@@ -10,8 +10,11 @@
   "author": "BryanYeh",
   "license": "MIT",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
+    "express-session": "^1.14.1",
     "mongodb": "^2.2.9",
+    "randomstring": "^1.1.5",
     "shopify-node-api": "^1.7.2",
     "validator": "^5.7.0"
   }
