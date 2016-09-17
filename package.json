@@ -9,8 +9,8 @@
   ],
   "author": "BryanYeh",
   "license": "MIT",
+  "repository": "https://github.com/BryanYeh/Node-Shopify-App",
   "dependencies": {
-    "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "express-session": "^1.14.1",
     "mongodb": "^2.2.9",
