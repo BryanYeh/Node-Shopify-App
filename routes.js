@@ -3,11 +3,11 @@ var router = express.Router();
 
 var config = require('./config');
 
-var users = require('./controllers/users');
+var auth = require('./controllers/auth');
 
-router.get('/', users.index);
-router.get('/login', users.login);
-router.get('/payments', users.payments);
-router.get('/test', users.test);
+router.get('/', auth.index);
+router.get('/login', auth.login);
+router.get('/payments', auth.payments);
+router.get('/test', auth.test);
 
 module.exports = router;
