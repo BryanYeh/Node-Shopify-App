@@ -36,7 +36,9 @@ var config = {
          *   read_users, write_users
          */
         scopes: 'read_content, write_content, read_products, write_products',
-
+    },
+    sessions: {
+        session_secret: "its My secret"
     }
 };
 
