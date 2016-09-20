@@ -8,6 +8,6 @@ var auth = require('./controllers/auth');
 router.get('/', auth.index);
 router.get('/login', auth.login);
 router.get('/payments', auth.payments);
-router.get('/test', auth.test);
+router.get('/charge', auth.charge);
 
 module.exports = router;
