@@ -62,31 +62,59 @@ exports.payments = function (req, res) {
     });
 
     Shopify.get('/admin/shop.json', null, function (err, data, headers) {
-        console.log('------------------------------------');
-        console.log(data);
-        console.log('------------------------------------');
 
-        // Shop.findOne({myshopify_domain: data['shop']['myshopify_domain']},function (err, shopObj){
-        //     if (err) {
-        //         console.log('Got an error');
-        //     } else if (shopObj) {
-        //         console.log('Found:');
-        //     } else {
-        //         console.log('User not found!');
-        //     }
-        // });
-        //
-        // var my_shop = new Shop({
-        //     id: data['shop']['id'],
-        //     email : data['shop']['email'],
-        //     phone : data['shop']['phone'],
-        //     shop_owner : data['shop']['shop_owner'],
-        //     timezone : data['shop']['timezone'],
-        //     domain : data['shop']['domain'],
-        //     myshopify_domain: data['shop']['myshopify_domain'],
-        //     plan_name: data['shop']['plan_name'],
-        //     app_status: 'pending'
-        // });
+        Shop.findOne({myshopify_domain: data['shop']['myshopify_domain']}, function (err, shopObj) {
+            if (err) {
+                console.log('Got an error');
+            } else if (shopObj) {
+                // shop was found
+                // console.log('*************************************');
+                // console.log(shopObj);
+                // console.log('*************************************');
+
+                if (shopObj.app_status == 'accepted')
+                    res.redirect('/dashboard');
+                else {
+                    //update shop info
+                }
+
+            } else {
+                // shop not found
+
+                var my_shop = new Shop({
+                    id: data['shop']['id'],
+                    email: data['shop']['email'],
+                    phone: data['shop']['phone'],
+                    shop_owner: data['shop']['shop_owner'],
+                    timezone: data['shop']['timezone'],
+                    domain: data['shop']['domain'],
+                    myshopify_domain: data['shop']['myshopify_domain'],
+                    plan_name: data['shop']['plan_name'],
+                    app_status: 'pending',
+                    charge_id: ''
+                });
+
+                my_shop.save(function (err) {
+                    if (err)
+                        console.log('Error on save!')
+                });
+
+                var post_data = {
+                    "application_charge": {
+                        "name": "1 Time Super Charge",
+                        "price": 1000.05,
+                        "return_url": "http:\/\/localhost:3000\/charge",
+                        "test": true
+                    }
+                };
+
+                Shopify.post('/admin/application_charges.json', post_data, function (err, data, headers) {
+                    res.redirect(data['application_charge']['confirmation_url']);
+                });
+            }
+        });
+        
+
 
         /*
          * check if myshopify_domain is in db
@@ -109,18 +137,6 @@ exports.payments = function (req, res) {
     });
 
 
-    var post_data = {
-        "application_charge": {
-            "name": "1 Time Super Charge",
-            "price": 1000.05,
-            "return_url": "http:\/\/localhost:3000\/charge",
-            "test": true
-        }
-    };
-
-    Shopify.post('/admin/application_charges.json', post_data, function (err, data, headers) {
-        res.redirect(data['application_charge']['confirmation_url']);
-    });
 };
 
 exports.charge = function (req, res) {
@@ -144,8 +160,20 @@ exports.charge = function (req, res) {
         }
         else {
             Shopify.post('/admin/application_charges/' + charge_id + '/activate.json', data, function (err, dataCharged, headers) {
-                console.log('-----------------------------------');
-                console.log(dataCharged);
+                Shop.find({myshopify_domain: sess.shop}, function (err, my_shop) {
+                    if (my_shop.length > 0) {
+                        my_shop = my_shop[0];
+                        my_shop.charge_id = charge_id;
+                        my_shop.app_status = 'accepted';
+                        my_shop.save(function (err) {
+                            if (err) {
+                                console.error('ERROR!');
+                            }
+                            res.redirect(config.hostname + '/dashboard');
+                        });
+                    }
+
+                });
             });
         }
     });

@@ -39,7 +39,8 @@ var config = {
     },
     sessions: {
         session_secret: "its My secret"
-    }
+    },
+    db: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/shopify'
 };
 
 module.exports = config;

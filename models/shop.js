@@ -15,7 +15,8 @@ var shopSchema = new Schema({
     plan_name: {type: String},
     app_created_at: {type: Date, default: Date.now()},
     app_updated_at: {type: Date, default: Date.now()},
-    app_status: {type: String, default: 'pending'}
+    app_status: {type: String, default: 'pending'},
+    charge_id: {type: String}
 });
 
 // on every save, add the date
