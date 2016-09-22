@@ -7,4 +7,4 @@ This is a work in progress using [shopify-node-api](https://www.npmjs.com/packag
 
 - Installing app
 - Approve/Decline (test) charge only
-- Mostly working up to empty dashboard
+- Everything leads up to empty dashboard page

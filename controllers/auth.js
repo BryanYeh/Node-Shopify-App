@@ -1,18 +1,23 @@
 var express = require('express');
-
 var shopifyAPI = require('shopify-node-api');
 var randomString = require('randomstring');
 var config = require('../config');
 
+// Models
 var Shop = require('../models/shop');
 
+// Session variable
 var sess;
 
+// landing page for starting app
 exports.index = function (req, res) {
+
+    // store nonce and shop into session
     sess = req.session;
     sess.nonce = randomString.generate();
     sess.shop = req.query.shop;
 
+    // Shopify API object
     var Shopify = new shopifyAPI({
         shop: sess.shop,
         shopify_api_key: config.shopify.api_key,
@@ -22,15 +27,19 @@ exports.index = function (req, res) {
         nonce: sess.nonce
     });
 
+    // send user to install the app
     res.redirect(Shopify.buildAuthURL());
 };
 
+// login check
 exports.login = function (req, res) {
     sess = req.session;
-    if (!sess.nonce) {
-        sess.nonce = randomString.generate();
-    }
 
+    // should only be accessible through shopify
+    if (!sess.nonce)
+        res.send('You must go through your Shopify store to access this app.');
+
+    // Shopify API object
     var Shopify = new shopifyAPI({
         shop: sess.shop,
         shopify_api_key: config.shopify.api_key,
@@ -40,20 +49,29 @@ exports.login = function (req, res) {
         nonce: sess.nonce
     });
 
+    // exchange for a token
     query_params = req.query;
     Shopify.exchange_temporary_token(query_params, function (err, data) {
-        sess.token = data['access_token'];
-        res.redirect(config.hostname + '/payments');
+        if (data['access_token']) {
+            sess.token = data['access_token'];
+            res.redirect(config.hostname + '/payments');
+        }
+        else {
+            res.send('Error login in!');
+            console.log('--> ERROR : saving @ /login');
+        }
     });
 };
 
-
+// Payments
 exports.payments = function (req, res) {
     sess = req.session;
-    if (!sess.token) {
-        res.redirect('/');
-    }
-    
+
+    // should only be accessible through shopify
+    if (!sess.token)
+        res.send('You must go through your Shopify store to access this app.');
+
+    // Shopify API object
     var Shopify = new shopifyAPI({
         shop: sess.shop,
         shopify_api_key: config.shopify.api_key,
@@ -61,26 +79,38 @@ exports.payments = function (req, res) {
         access_token: sess.token
     });
 
+    // Get shop info
     Shopify.get('/admin/shop.json', null, function (err, data, headers) {
 
+        // Find shop in database
         Shop.findOne({myshopify_domain: data['shop']['myshopify_domain']}, function (err, shopObj) {
-            if (err) {
-                console.log('Got an error');
-            } else if (shopObj) {
-                // shop was found
-                // console.log('*************************************');
-                // console.log(shopObj);
-                // console.log('*************************************');
 
+            // Error occured
+            if (err) {
+                res.send('Error finding shop!');
+                console.log('--> ERROR : finding shop @ /payments');
+            }
+
+            // shop is found
+            else if (shopObj) {
+                // app paid
                 if (shopObj.app_status == 'accepted')
                     res.redirect('/dashboard');
+
+                // app not paid   
                 else {
-                    //update shop info
+                    // remove shop info from database and refresh page
+                    shopObj.remove(function (err) {
+                        if (err) console.log('Error : removing shop from database @ /payments');
+                        res.redirect('/payments');
+                    });
                 }
+            }
 
-            } else {
-                // shop not found
+            // shop not found
+            else {
 
+                // store needed shop info into database
                 var my_shop = new Shop({
                     id: data['shop']['id'],
                     email: data['shop']['email'],
@@ -95,9 +125,12 @@ exports.payments = function (req, res) {
                 });
 
                 my_shop.save(function (err) {
-                    if (err)
-                        console.log('Error on save!')
+                    if (err) {
+                        res.send('Error saving shop to database!');
+                        console.log('--> ERROR : saving @ /payments');
+                    }
                 });
+
 
                 var post_data = {
                     "application_charge": {
@@ -108,45 +141,27 @@ exports.payments = function (req, res) {
                     }
                 };
 
+                // Ask shop owner to accept/decline charge
                 Shopify.post('/admin/application_charges.json', post_data, function (err, data, headers) {
                     res.redirect(data['application_charge']['confirmation_url']);
                 });
             }
         });
-        
-
-
-        /*
-         * check if myshopify_domain is in db
-         *      - if not continue
-         *          -save
-         *      - else
-         *          go to main app
-         *
-         * what should be saved
-         * id
-         * email
-         * domain
-         * phone
-         * timezone
-         * shop_owner
-         * plan_name : affiliate
-         * myshopify_domain
-         *
-         */
     });
 
 
 };
 
+// charge for the app
 exports.charge = function (req, res) {
+    if (!req.query.charge_id) res.send('You must launch app through Shopify admin');
+
     var charge_id = req.query.charge_id;
 
     sess = req.session;
-    if (!sess.token) {
-        res.redirect('/');
-    }
+    if (!sess.token) res.send('You must launch app through Shopify admin');
 
+    // Shopify API token
     var Shopify = new shopifyAPI({
         shop: sess.shop,
         shopify_api_key: config.shopify.api_key,
@@ -154,10 +169,14 @@ exports.charge = function (req, res) {
         access_token: sess.token
     });
 
+    // check if shop owner accepted charge
     Shopify.get('/admin/application_charges/' + charge_id + '.json', null, function (err, data, headers) {
+        // shop owner decline charge
         if (data['application_charge']['status'] == 'declined') {
             res.redirect(config.hostname + '/payments');
         }
+
+        // shop owner accepted charge
         else {
             Shopify.post('/admin/application_charges/' + charge_id + '/activate.json', data, function (err, dataCharged, headers) {
                 Shop.find({myshopify_domain: sess.shop}, function (err, my_shop) {
