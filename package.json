@@ -11,6 +11,7 @@
   "license": "MIT",
   "repository": "https://github.com/BryanYeh/Node-Shopify-App",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "express-session": "^1.14.1",
     "mongoose": "^4.6.0",

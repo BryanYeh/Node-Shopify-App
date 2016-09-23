@@ -40,7 +40,15 @@ var config = {
     sessions: {
         session_secret: "its My secret"
     },
-    db: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/shopify'
+    db: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/shopify',
+    /*
+     * Webhook is required for uninstall of the app
+     * Cannot use 'localhost'
+     * If you are using it on local machine, read more at https://help.shopify.com/api/tutorials/webhooks
+     */
+    web_hook: {
+        uninstall: 'http:\/\/requestb.in\/1k1e1vo1' //example, user limit would be used up when this is on github
+    }
 };
 
 module.exports = config;

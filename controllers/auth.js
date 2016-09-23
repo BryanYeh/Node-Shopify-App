@@ -81,7 +81,9 @@ exports.payments = function (req, res) {
 
     // Get shop info
     Shopify.get('/admin/shop.json', null, function (err, data, headers) {
-
+        console.log('**************************');
+        console.log(data);
+        console.log('**************************');
         // Find shop in database
         Shop.findOne({myshopify_domain: data['shop']['myshopify_domain']}, function (err, shopObj) {
 
@@ -188,6 +190,18 @@ exports.charge = function (req, res) {
                             if (err) {
                                 console.error('ERROR!');
                             }
+
+                            var webhook = {
+                                "webhook": {
+                                    "topic": 'app\/uninstalled',
+                                    "address": config.web_hook.uninstall,
+                                    "format": 'json'
+                                }
+                            };
+
+                            Shopify.post('/admin/webhooks.json', webhook, function (err) {
+                                if (err) console.log('Error: registering webhook');
+                            });
                             res.redirect(config.hostname + '/dashboard');
                         });
                     }
