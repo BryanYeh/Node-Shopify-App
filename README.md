@@ -1,14 +1,23 @@
-# Node Shopify App
+# Node Public Shopify App
 
 ### A Shopify App using Node
 ##### Note: MongoDB required
 
-This is a work in progress using [shopify-node-api](https://www.npmjs.com/package/shopify-node-api) to build a public shopify app
+This is a work in progress of a Public Shopify App,
+while learning Node and using [shopify-node-api](https://www.npmjs.com/package/shopify-node-api)
 
-- Installing app
-- Approve/Decline (test) charge only
-- Everything leads up to empty dashboard page
-- Webhook for uninstall (need to save webhook id into database to remove from shopify)
+- [x] Installing app
+- [x] (test) charge
+    - [x] accept
+    - [x] decline
+- [ ] Dashboard
+    - [x] empty page
+    - [ ] sample (undecided)
+- [ ] Webhook for uninstall
+    - [ ] save webhook id into database to remove from Shopify
+    - [ ] verify webhook POST is from Shopify
+    - [x] webhook unintsall (remove) from database
+- [ ] Shopify name verification
 
 ### Shopify's End - App Settings (Default)
 
