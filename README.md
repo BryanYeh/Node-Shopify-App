@@ -8,7 +8,7 @@ This is a work in progress using [shopify-node-api](https://www.npmjs.com/packag
 - Installing app
 - Approve/Decline (test) charge only
 - Everything leads up to empty dashboard page
-- Webhook for uninstall (untested, still need to remove webhook after uninstall)
+- Webhook for uninstall (need to save webhook id into database to remove from shopify)
 
 ### Shopify's End - App Settings (Default)
 

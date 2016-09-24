@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
-app.use(bodyParser.json({extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
 
 // Models
 var Shop = require('../models/shop');
@@ -21,9 +21,10 @@ exports.uninstall = function (req, res) {
     // find store and remove from database
     Shop.findOne({myshopify_domain: my_shop}, function (err, shopObj) {
         if (shopObj) {
+            var id = shopObj.id;
             shopObj.remove(function (err) {
                 console.log(my_shop + ': uninstalled your app');
-                // TODO: remove webhook for the shop
+                // TODO: get webhook id from database and use it to DELETE it from shopify
             });
         }
     });

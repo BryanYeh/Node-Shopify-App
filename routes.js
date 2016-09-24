@@ -11,6 +11,6 @@ router.get('/login', auth.login);
 router.get('/payments', auth.payments);
 router.get('/charge', auth.charge);
 router.get('/dashboard', prog.dashboard);
-router.get('/uninstall', prog.uninstall);
+router.post('/uninstall', prog.uninstall);
 
 module.exports = router;
