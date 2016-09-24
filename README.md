@@ -7,7 +7,7 @@ This is a work in progress of a Public Shopify App,
 while learning Node and using [shopify-node-api](https://www.npmjs.com/package/shopify-node-api)
 
 - [x] Installing app
-- [x] (test) charge
+- [x] test charge
     - [x] accept
     - [x] decline
 - [ ] Dashboard
