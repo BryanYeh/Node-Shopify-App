@@ -14,7 +14,7 @@ while learning Node and using [shopify-node-api](https://www.npmjs.com/package/s
     - [x] empty page
     - [ ] sample (undecided)
 - [ ] Webhook for uninstall
-    - [ ] save webhook id into database to remove from Shopify
+    - [x] save webhook id into database to remove from Shopify
     - [ ] verify webhook POST is from Shopify
     - [x] webhook unintsall (remove) from database
 - [ ] Shopify name verification
