@@ -47,7 +47,7 @@ var config = {
      * If you are using it on local machine, read more at https://help.shopify.com/api/tutorials/webhooks
      */
     web_hook: {
-        uninstall: 'http:\/\/049f0b15.ngrok.io\/uninstall' //example, used ngrok "ngrok http localhost:3000"
+        uninstall: 'http://a5ceb6c5.ngrok.io/uninstall' //example, used ngrok "ngrok http localhost:3000"
     }
 };
 

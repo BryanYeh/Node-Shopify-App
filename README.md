@@ -6,6 +6,8 @@
 This is a work in progress of a Public Shopify App,
 while learning Node and using [shopify-node-api](https://www.npmjs.com/package/shopify-node-api)
 
+##### HELP: After this app gets the access_token, it is stored into the database, but it seems the access_token (token in database) is not working once I try to delete the webhook
+
 - [x] Installing app
 - [x] test charge
     - [x] accept

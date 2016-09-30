@@ -4,7 +4,7 @@ var router = express.Router();
 var config = require('./config');
 
 var auth = require('./controllers/auth');
-var prog = require('./controllers/program')
+var prog = require('./controllers/program');
 
 router.get('/', auth.index);
 router.get('/login', auth.login);
