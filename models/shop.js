@@ -17,7 +17,7 @@ var shopSchema = new Schema({
     app_updated_at: {type: Date, default: Date.now()},
     app_status: {type: String, default: 'pending'},
     charge_id: {type: String},
-    uninstall_webhook_id: {type: String},
+    uninstall_webhook_id: {type: Number},
     token: {type: String}
 });
 

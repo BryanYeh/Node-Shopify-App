@@ -2,6 +2,7 @@ var express = require('express');
 var shopifyAPI = require('shopify-node-api');
 var randomString = require('randomstring');
 var config = require('../config');
+var helpers = require('../helpers/functions');
 
 // Models
 var Shop = require('../models/shop');
@@ -15,30 +16,35 @@ exports.index = function (req, res) {
     sess = req.session;
     sess.shop = req.query.shop;
 
-    Shop.findOne({myshopify_domain: sess.shop}, function (err, my_shop) {
-        if (err) console.log('---> Error: Initializing the store');
-        else if (my_shop && my_shop.token != '' && my_shop.app_status == 'accepted') {
-            sess.token = my_shop.token;
-            console.log('---> redirecting to dashboard');
-            res.redirect('/dashboard');
-        }
-        else {
-            sess.nonce = randomString.generate();
+    // make sure store is shopify name store
+    if (helpers.is_shopify_store(sess.shop)) {
+        Shop.findOne({myshopify_domain: sess.shop}, function (err, my_shop) {
+            if (err) console.log('---> Error: Initializing the store');
+            else if (my_shop && my_shop.token != '' && my_shop.app_status == 'accepted') {
+                sess.token = my_shop.token;
+                console.log('---> redirecting to dashboard');
+                res.redirect('/dashboard');
+            }
+            else {
+                sess.nonce = randomString.generate();
 
-            // Shopify API object
-            var Shopify = new shopifyAPI({
-                shop: sess.shop,
-                shopify_api_key: config.shopify.api_key,
-                shopify_shared_secret: config.shopify.shared_secret,
-                shopify_scope: config.shopify.scopes,
-                redirect_uri: config.hostname + '/login',
-                nonce: sess.nonce
-            });
+                // Shopify API object
+                var Shopify = new shopifyAPI({
+                    shop: sess.shop,
+                    shopify_api_key: config.shopify.api_key,
+                    shopify_shared_secret: config.shopify.shared_secret,
+                    shopify_scope: config.shopify.scopes,
+                    redirect_uri: config.hostname + '/login',
+                    nonce: sess.nonce
+                });
 
-            // send user to install the app
-            res.redirect(Shopify.buildAuthURL());
-        }
-    });
+                // send user to install the app
+                res.redirect(Shopify.buildAuthURL());
+            }
+        });
+    }
+    else res.send('Invalid store');
+
 
 };
 
@@ -65,11 +71,6 @@ exports.login = function (req, res) {
             if (err) console.log('--> Error: Trading for perm token');
             else if (data['access_token']) {
                 sess.token = data['access_token'];
-                console.log('new sess.token: ' + sess.token);
-
-                console.log('---> Traded in for perm token');
-                console.log('---> redirecting to payments');
-
                 res.redirect(config.hostname + '/payments');
             }
             else {
@@ -148,6 +149,7 @@ exports.payments = function (req, res) {
                         console.log('---> ERROR : saving @ /payments');
                         res.redirect(config.hostname + '/payments');
                     }
+                    else sess.nonce = '';
                 });
 
 
@@ -159,7 +161,6 @@ exports.payments = function (req, res) {
                         "test": true
                     }
                 };
-                console.log(post_data);
 
                 // Ask shop owner to accept/decline charge
                 Shopify.post('/admin/application_charges.json', post_data, function (err, data, headers) {
