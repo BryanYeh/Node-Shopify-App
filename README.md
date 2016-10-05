@@ -14,8 +14,8 @@ while learning Node and using [shopify-node-api](https://www.npmjs.com/package/s
 - [ ] Dashboard
     - [x] empty page
     - [ ] sample (undecided)
-- [ ] Webhook for uninstall
-    - [ ] verify webhook POST is from Shopify
+- [x] Webhook for uninstall
+    - [x] verify webhook POST is from Shopify
     - [x] webhook uninstall (remove) from database
 
 
