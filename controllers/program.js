@@ -7,12 +7,13 @@ var helpers = require('../helpers/functions');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
+
 // Models
 var Shop = require('../models/shop');
 
 // dashboard
 exports.dashboard = function (req, res) {
-    res.send('You\'ve have experienced the charging of the app using Node JS and Shopify API');
+    res.sendFile('/index.html');
 };
 
 

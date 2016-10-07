@@ -15,6 +15,7 @@
     "crypto": "0.0.3",
     "express": "^4.14.0",
     "express-session": "^1.14.1",
+    "jquery": "^3.1.1",
     "mongoose": "^4.6.0",
     "randomstring": "^1.1.5",
     "shopify-node-api": "^1.7.2"

@@ -15,6 +15,9 @@ app.use(session({
     saveUninitialized: false
 }));
 
+app.use(express.static('public'));
+app.use('/modules/', express.static(__dirname + '/node_modules'));
+
 // include routes
 app.use('/', routes);
 
