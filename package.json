@@ -12,10 +12,11 @@
   "repository": "https://github.com/BryanYeh/Node-Shopify-App",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "bootstrap": "3.3.7",
     "crypto": "0.0.3",
     "express": "^4.14.0",
     "express-session": "^1.14.1",
-    "jquery": "^3.1.1",
+    "jquery": "1.9.1",
     "mongoose": "^4.6.0",
     "randomstring": "^1.1.5",
     "shopify-node-api": "^1.7.2"
