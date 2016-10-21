@@ -8,6 +8,8 @@ var http = require('http').Server(app);
 
 var routes = require('./routes.js');
 app.use(bodyParser.json({extended: true}));
+app.use(bodyParser.urlencoded({extended: false}));
+
 // session configuration
 app.use(session({
     secret: config.sessions.session_secret,
@@ -15,7 +17,9 @@ app.use(session({
     saveUninitialized: false
 }));
 
-app.use('/',express.static(__dirname + '/public'));
+// set the view engine to ejs
+app.set('view engine', 'ejs');
+
 app.use('/modules/', express.static(__dirname + '/node_modules'));
 
 // include routes

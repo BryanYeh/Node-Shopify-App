@@ -12,5 +12,6 @@ router.get('/payments', auth.payments);
 router.get('/charge', auth.charge);
 router.get('/dashboard', prog.dashboard);
 router.post('/uninstall', prog.uninstall);
+router.post('/createFoodMenu', prog.createFoodMenu);
 
 module.exports = router;

@@ -7,13 +7,66 @@ var helpers = require('../helpers/functions');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
-
 // Models
 var Shop = require('../models/shop');
 
 // dashboard
 exports.dashboard = function (req, res) {
-    res.sendFile('/index.html');
+    var foods = [
+        { name: 'Sushi', vendor: 'Set the Bar' },
+        { name: 'Bread', vendor: 'Braker Brad' },
+        { name: 'Sandwich', vendor: 'Muk Dunloud' }
+    ];
+
+    res.render('index', {
+            foods: foods
+        });
+};
+
+exports.createFoodMenu = function(req, res){
+    res.send(req.body.mTimes);
+    var products = [
+        {
+            "product": {
+                "title": "Sushi",
+                "body_html": "Fish with rich mixed together",
+                "vendor": "Set the Bar",
+                "product_type": "Food",
+                "images": [
+                    {
+                        "src": "http:\/\/lorempixel.com\/600\/600\/food\/4"
+                    }
+                ]
+            }
+        },
+        {
+            "product": {
+                "title": "Bread",
+                "body_html": "Just your average bread",
+                "vendor": "Braker Brad",
+                "product_type": "Food",
+                "images": [
+                    {
+                        "src": "http:\/\/lorempixel.com\/600\/600\/food\/10"
+                    }
+                ]
+            }
+        },
+        {
+            "product": {
+                "title": "Sandwich",
+                "body_html": "A nasty sandwich you don't want to eat",
+                "vendor": "Muk Dunloud",
+                "product_type": "Food",
+                "images": [
+                    {
+                        "src": "http:\/\/lorempixel.com\/600\/600\/food\/4"
+                    }
+                ]
+            }
+        }
+
+    ];
 };
 
 
