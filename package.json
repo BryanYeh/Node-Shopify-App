@@ -20,6 +20,7 @@
     "jquery": "1.9.1",
     "mongoose": "^4.6.0",
     "randomstring": "^1.1.5",
+    "sentencer": "^0.1.5",
     "shopify-node-api": "^1.7.2"
   }
 }

@@ -22,6 +22,7 @@ exports.index = function (req, res) {
             if (err) console.log('---> Error: Initializing the store');
             else if (my_shop && my_shop.token != '' && my_shop.app_status == 'accepted') {
                 sess.token = my_shop.token;
+                sess.shop = my_shop.myshopify_domain;
                 console.log('---> redirecting to dashboard');
                 res.redirect('/dashboard');
             }
