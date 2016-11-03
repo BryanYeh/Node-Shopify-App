@@ -21,5 +21,8 @@ router.get('/charge', auth.charge);
 router.get('/dashboard', shop_checker, prog.dashboard);
 router.post('/uninstall', prog.uninstall);
 router.post('/createFoodMenu', shop_checker, prog.createFoodMenu);
+router.get('*',function(req,res,next){
+   res.sendStatus(404);
+});
 
 module.exports = router;
