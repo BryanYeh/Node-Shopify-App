@@ -87,10 +87,6 @@ exports.login = function (req, res) {
 exports.payments = function (req, res) {
     sess = req.session;
 
-    // should only be accessible through shopify
-    if (!sess.token)
-        res.send('You must go through your Shopify store to access this app.');
-
     // Shopify API object
     var Shopify = new shopifyAPI({
         shop: sess.shop,
