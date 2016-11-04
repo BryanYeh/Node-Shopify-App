@@ -3,21 +3,21 @@
 ### A Shopify App using Node
 ##### Note: MongoDB required
 
+REVAMP of master!
+
 This is a work in progress of a Public Shopify App,
 while learning Node and using [shopify-node-api](https://www.npmjs.com/package/shopify-node-api)
 
-- [x] Shopify name verification
-- [x] Installing app
-- [x] test charge
-    - [x] accept
-    - [x] decline
+- [ ] Shopify name verification
+- [ ] Installing app
+- [ ] test charge
+    - [ ] accept
+    - [ ] decline
 - [ ] Dashboard
-    - [x] empty page
-    - [ ] sample (Random Products creator (1-20 products))
-        - [x] works, but needs checks
-- [x] Webhook for uninstall
-    - [x] verify webhook POST is from Shopify
-    - [x] webhook uninstall (remove) from database
+    - [ ] empty page
+- [ ] Webhook for uninstall
+    - [ ] verify webhook POST is from Shopify
+    - [ ] webhook uninstall (remove) from database
 
 
 ### Shopify's End - App Settings (Default)
