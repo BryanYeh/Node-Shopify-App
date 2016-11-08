@@ -15,8 +15,7 @@ var index = function (req, res, next) {
             sess.token = my_shop.token;
             sess.shop = my_shop.myshopify_domain;
             console.log('---> Success: Now redirecting to dashboard from index');
-            // res.redirect('/dashboard');
-            res.send('will redirect to dashboard');
+            res.redirect('/dashboard');
         }
         else {
             sess.nonce = randomString.generate();
@@ -30,11 +29,15 @@ var index = function (req, res, next) {
                 nonce: sess.nonce
             });
 
-            // res.redirect(Shopify.buildAuthURL());
-            console.log('---> Success: will redirect to buildAuthUrl');
-            res.send(sess.nonce);
+            res.redirect(Shopify.buildAuthURL());
         }
     });
 };
 
 exports.index = index;
+
+var dashboard = function (req, res, next) {
+    res.render('dashboard');
+};
+
+exports.dashboard = dashboard;

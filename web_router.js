@@ -9,16 +9,15 @@ var the_app = require('./controllers/the_app'); //dashboard
 //middleware
 var auth = require('./middlewares/auth'); //login checker
 
-router.get('/', the_app.index);
-// router.get('/login', shop.login);
-// router.get('/payments', shop.payments);
-// router.get('/charge', shop.charge);
-// router.get('/dashboard', the_app.dashboard);
+router.get('/', auth.verify_shop_name, the_app.index);
+router.get('/login', auth.hasNonce, shop.login);
+router.get('/payments', auth.hasToken, shop.payments);
+router.get('/charge', auth.hasCharge, shop.charge);
+router.get('/dashboard', auth.hasToken, the_app.dashboard);
 
 
-router.get('*', auth.veryify_shop_name, function(req,res,next){
-    // return res.status(404).render('404');
-    return res.sendStatus(404);
+router.get('*', auth.hasToken, function(req,res,next){
+    return res.status(404).render('404');
 });
 
 module.exports = router;
