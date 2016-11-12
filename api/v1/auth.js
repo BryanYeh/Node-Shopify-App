@@ -4,12 +4,12 @@ var config = require('../../config');
 var verify_webhook = function (req, res, next) {
     // Found it here: https://github.com/jonpulice/node-shopify-auth/blob/master/lib/main.js#L327
 
-    var hmac = headers['x-shopify-hmac-sha256'],
+    var hmac = req.headers['x-shopify-hmac-sha256'],
         kvpairs = [],
         message,
         digest;
 
-    message = JSON.stringify(body);
+    message = JSON.stringify(req.body);
 
     //Shopify seems to be escaping forward slashes when the build the HMAC
     // so we need to do the same otherwise it will fail validation

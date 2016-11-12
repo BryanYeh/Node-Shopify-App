@@ -3,7 +3,6 @@ var config = require('../../config');
 var Shop = require('../../models/shop');
 
 var uninstall = function (req, res, next) {
-    if (req.headers['x-shopify-shop-domain']) {
         var my_shop = req.headers['x-shopify-shop-domain'];
         Shop.findOne({myshopify_domain: my_shop}, function (err, shopObj) {
             if (shopObj) {
@@ -19,6 +18,5 @@ var uninstall = function (req, res, next) {
                 });
             }
         });
-    }
 };
 exports.uninstall_webhook = uninstall;
