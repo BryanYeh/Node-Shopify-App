@@ -13,8 +13,6 @@ while learning Node and using [shopify-node-api](https://www.npmjs.com/package/s
     - [x] decline
 - [ ] Dashboard
     - [x] empty page
-    - [ ] sample (Random Products creator (1-20 products))
-        - [x] works, but needs checks
 - [x] Webhook for uninstall
     - [x] verify webhook POST is from Shopify
     - [x] webhook uninstall (remove) from database

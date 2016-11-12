@@ -35,7 +35,7 @@ var config = {
          *   Access to User (SHOPIFY PLUS access only).
          *   read_users, write_users
          */
-        scopes: 'read_content, write_content, read_products, write_products',
+        scopes: 'read_content, write_content, read_products, write_products'
     },
     sessions: {
         session_secret: "its My secret"
@@ -47,7 +47,7 @@ var config = {
      * If you are using it on local machine, read more at https://help.shopify.com/api/tutorials/webhooks
      */
     web_hook: {
-        uninstall: 'http://a5ceb6c5.ngrok.io/uninstall' //example, used ngrok "ngrok http localhost:3000"
+        uninstall: 'http://20b8696c.ngrok.io/api/v1/uninstall' //example, used ngrok "ngrok http localhost:3000"
     }
 };
 
