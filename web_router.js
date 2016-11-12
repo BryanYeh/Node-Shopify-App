@@ -16,7 +16,7 @@ router.get('/charge', auth.hasCharge, shop.charge);
 router.get('/dashboard', auth.hasToken, the_app.dashboard);
 
 
-router.get('*', auth.hasToken, function(req,res,next){
+router.get('*', function(req,res,next){
     return res.status(404).render('404');
 });
 

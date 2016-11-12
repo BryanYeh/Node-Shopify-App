@@ -8,7 +8,7 @@ var verify_shop_name = function (req, res, next) {
     }
     else{
         console.log('---> Error: Invalid shop name (' + shop + ')');
-        res.sendStatus(404);
+        return res.status(401).render('401');
     }
 };
 
@@ -17,7 +17,7 @@ exports.verify_shop_name = verify_shop_name;
 var has_nonce = function (req, res, next) {
     if(!req.session.nonce){
         console.log('---> Error: Cannot find nonce');
-        res.sendStatus(404);
+        return res.status(401).render('401');
     }
     else{
         console.log('---> Success: Found nonce');
@@ -30,7 +30,7 @@ exports.hasNonce = has_nonce;
 var has_token = function (req, res, next) {
     if(!req.session.token){
         console.log('---> Error: Cannot find token');
-        res.sendStatus(404);
+        return res.status(401).render('401');
     }
     else{
         console.log('---> Success: Found token');
@@ -43,7 +43,7 @@ exports.hasToken = has_token;
 var has_charge = function (req, res, next) {
     if(!req.query.charge_id){
         console.log('---> Error: Cannot find charge');
-        res.sendStatus(404);
+        return res.status(401).render('401');
     }
     else{
         console.log('---> Success: Found charge');
