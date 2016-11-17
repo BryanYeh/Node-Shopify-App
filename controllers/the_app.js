@@ -41,3 +41,51 @@ var dashboard = function (req, res, next) {
 };
 
 exports.dashboard = dashboard;
+
+var updateProduct = function (req, res, next) {
+    //  get from form
+    //      options & prices
+    //      product id
+    //      default variant id
+    //      inventory
+    //      weight
+    //      weight unit
+
+
+
+    var product =
+    {
+        "variant": {
+            "id": "variant_id",
+            "product_id": id,
+            "price": price,
+            "inventory_management": "shopify",
+            "option1": option,
+            "inventory_quantity": inventory,
+            "weight": weight,
+            "weight_unit": weight_unit,
+            "requires_shipping": true
+        }
+    };
+
+    var sess = req.session;
+
+
+    var Shopify = new shopifyAPI({
+        shop: sess.shop,
+        shopify_api_key: config.shopify.api_key,
+        shopify_shared_secret: config.shopify.shared_secret,
+        access_token: sess.token
+    });
+
+    //  update default name
+    //      post new variants
+    Shopify.post('/admin/products/${id}/variants.json', product, function (err, data){
+        if(!err)
+            res.send(data);
+        else
+            res.send(err);
+    });
+};
+
+exports.updateProduct = updateProduct;
