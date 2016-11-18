@@ -37,34 +37,52 @@ var index = function (req, res, next) {
 exports.index = index;
 
 var dashboard = function (req, res, next) {
-    res.render('dashboard');
+    var sess = req.session;
+
+    var Shopify = new shopifyAPI({
+        shop: sess.shop,
+        shopify_api_key: config.shopify.api_key,
+        shopify_shared_secret: config.shopify.shared_secret,
+        access_token: sess.token
+    });
+    console.log("in dashboard");
+    Shopify.get('/admin/products.json?limit=30', null, function (err, data){
+        if(!err){
+            console.log(data.products);
+            res.render('dashboard',{
+                products: data.products
+            });
+        }
+        else{
+            res.send(err);
+        }
+    });
 };
 
 exports.dashboard = dashboard;
 
 var updateProduct = function (req, res, next) {
     //  get from form
-    //      options & prices
-    //      product id
-    //      default variant id
-    //      inventory
-    //      weight
-    //      weight unit
+    var product_id = req.body.product_id,
+        inventory = req.body.inventory,
+        weight = req.weight,
+        weight_unit = req.body.weight_unit,
+        price = req.body.price,
+        option = req.body.option,
+        sku = req.body.sku;
 
-
-
-    var product =
+    var variant =
     {
         "variant": {
-            "id": "variant_id",
-            "product_id": id,
+            "product_id": product_id,
             "price": price,
             "inventory_management": "shopify",
             "option1": option,
             "inventory_quantity": inventory,
             "weight": weight,
             "weight_unit": weight_unit,
-            "requires_shipping": true
+            "requires_shipping": true,
+            "sku": sku
         }
     };
 
@@ -78,14 +96,14 @@ var updateProduct = function (req, res, next) {
         access_token: sess.token
     });
 
-    //  update default name
-    //      post new variants
-    Shopify.post('/admin/products/${id}/variants.json', product, function (err, data){
-        if(!err)
-            res.send(data);
+    Shopify.post('/admin/products/' + product_id + '/variants.json', variant, function (err, data){
+        if(!err){
+            res.sendStatus(200);
+        }
         else
-            res.send(err);
+            res.sendStatus(500);
     });
+
 };
 
 exports.updateProduct = updateProduct;

@@ -10,7 +10,27 @@
 <div class="container">
     <h1>Dashboard</h1>
 
-
+    <% products.forEach(function(product) { %>
+    <div class="col-md-12">
+        <div class="well">
+            <h4><%= product.title %></h4>
+            <form>
+                <input type="hidden" name="product_id" value="<%= product.id %>">
+                <% product.variants.forEach(function(variant){ %>
+                <input type="hidden" name="price" value="<%= variant.price %>">
+                <input type="hidden" name="sku" value="<%= variant.sku %>">
+                <input type="hidden" name="weight" value="<%= variant.weight %>">
+                <input type="hidden" name="weight_unit" value="<%= variant.weight_unit %>">
+                <% }); %>
+                <div class="form-group">
+                    <label for="option">Option:</label>
+                    <input type="text" class="form-control" name="option" id="option">
+                </div>
+                <input type="submit" class="btn btn-submit">
+            </form>
+        </div>
+    </div>
+    <% }); %>
 
 </div>
 
