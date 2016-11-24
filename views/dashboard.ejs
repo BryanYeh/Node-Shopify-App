@@ -9,22 +9,29 @@
 <body>
 <div class="container">
     <h1>Dashboard</h1>
+    <h2>This will create a NEW option called <strong>Membership</strong> with its variants and prices you input</h2>
 
-    <% products.forEach(function(product) { %>
+    <% products.product.forEach(function(product) { %>
     <div class="col-md-12">
         <div class="well">
-            <h4><%= product.title %></h4>
-            <form>
+            <h3><%= product.title %> <small>$<%= product.price %></small></h3>
+            <form class="membership" action="/membership" method="post">
                 <input type="hidden" name="product_id" value="<%= product.id %>">
-                <% product.variants.forEach(function(variant){ %>
-                <input type="hidden" name="price" value="<%= variant.price %>">
-                <input type="hidden" name="sku" value="<%= variant.sku %>">
-                <input type="hidden" name="weight" value="<%= variant.weight %>">
-                <input type="hidden" name="weight_unit" value="<%= variant.weight_unit %>">
-                <% }); %>
-                <div class="form-group">
-                    <label for="option">Option:</label>
-                    <input type="text" class="form-control" name="option" id="option">
+                <input type="hidden" name="sku" value="<%= product.sku %>">
+                <input type="hidden" name="weight" value="<%= product.weight %>">
+                <input type="hidden" name="weight_unit" value="<%= product.weight_unit %>">
+                <input type="hidden" name="inventory_quanity" value="<%= product.inventory_quantity %>">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="option">Variant:</label>
+                        <input type="text" class="form-control" name="option" id="option">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="price">Price:</label>
+                        <input type="text" class="form-control" name="price" id="price">
+                    </div>
                 </div>
                 <input type="submit" class="btn btn-submit">
             </form>
@@ -37,5 +44,24 @@
 
 <script src="/modules/jquery/jquery.min.js"></script>
 <script src="/modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $('.membership').submit(function(event) {
+            event.preventDefault(); // Prevent the form from submitting via the browser
+            var form = $(this);
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(data) {
+                    console.log(data);
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            })
+        });
+    });
+</script>
 </body>
 </html>

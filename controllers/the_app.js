@@ -46,26 +46,57 @@ var dashboard = function (req, res, next) {
         access_token: sess.token
     });
     console.log("in dashboard");
-    Shopify.get('/admin/products.json?limit=30', null, function (err, data){
-        if(!err){
-            console.log(data.products);
-            res.render('dashboard',{
-                products: data.products
-            });
-        }
-        else{
-            res.send(err);
-        }
+    Shopify.get('/admin/products/count.json', null, function (err, data) {
+       if(!err){
+           var count = data.count;
+           Shopify.get('/admin/products.json?limit=50&page=1', null, function (err, data){
+               if(!err){
+                   var products = {};
+                   products['count'] = count;
+                   data.products.forEach(function (product) {
+                       var title = product.title,
+                           id = product.id;
+                       var price, sku, weight, weight_unit, inventory_quantity;
+
+                       product.variants.forEach(function (variant) {
+                           price = variant.price;
+                           sku = variant.sku;
+                           weight = variant.weight;
+                           weight_unit = variant.weight_unit;
+                           inventory_quantity = variant.inventory_quantity;
+                       });
+                       if (products['product'])
+                           products['product'] = products['product'].concat([{title: title, id: id, price: price,
+                               sku: sku, weight: weight, weight_unit: weight_unit,
+                               inventory_quantity: inventory_quantity}]);
+                       else products['product'] = [{title: title, id: id, price: price,
+                           sku: sku, weight: weight, weight_unit: weight_unit, inventory_quantity: inventory_quantity}];
+                   });
+
+                   res.render('dashboard',{
+                       products: products
+                   });
+               }
+               else{
+                   res.send(err);
+               }
+           });
+       }
+       else{
+           res.send(err);
+       }
     });
+
 };
 
 exports.dashboard = dashboard;
 
 var updateProduct = function (req, res, next) {
+
     //  get from form
     var product_id = req.body.product_id,
-        inventory = req.body.inventory,
-        weight = req.weight,
+        inventory = req.body.inventory_quantity,
+        weight = req.body.weight,
         weight_unit = req.body.weight_unit,
         price = req.body.price,
         option = req.body.option,
@@ -74,10 +105,11 @@ var updateProduct = function (req, res, next) {
     var variant =
     {
         "variant": {
+            "title": option,
             "product_id": product_id,
             "price": price,
             "inventory_management": "shopify",
-            "option1": option,
+            "option1": "Membership",
             "inventory_quantity": inventory,
             "weight": weight,
             "weight_unit": weight_unit,
@@ -97,11 +129,9 @@ var updateProduct = function (req, res, next) {
     });
 
     Shopify.post('/admin/products/' + product_id + '/variants.json', variant, function (err, data){
-        if(!err){
-            res.sendStatus(200);
-        }
-        else
-            res.sendStatus(500);
+        if(!err) res.status(200).json({title: option, price: price});
+        else res.status(404).json({ error: 'Not Found' });
+
     });
 
 };

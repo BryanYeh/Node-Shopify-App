@@ -14,6 +14,7 @@ router.get('/login', auth.hasNonce, shop.login);
 router.get('/payments', auth.hasToken, shop.payments);
 router.get('/charge', auth.hasCharge, shop.charge);
 router.get('/dashboard', auth.hasToken, the_app.dashboard);
+router.post('/membership', auth.hasToken, the_app.updateProduct);
 
 
 router.get('*', function(req,res,next){
