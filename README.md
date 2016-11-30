@@ -14,6 +14,7 @@ while learning Node and using [shopify-node-api](https://www.npmjs.com/package/s
 - [ ] Dashboard
     - [x] empty page
     - [ ] Example: membership shop (different pricing for tiers of members)
+        - ***Note***: This app ***ASSUMES*** there is ***ONLY*** 1 variant which is the main product
 - [x] Webhook for uninstall
     - [x] verify webhook POST is from Shopify
     - [x] webhook uninstall (remove) from database

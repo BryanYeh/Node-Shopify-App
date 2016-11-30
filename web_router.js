@@ -13,7 +13,7 @@ router.get('/', auth.verify_shop_name, the_app.index);
 router.get('/login', auth.hasNonce, shop.login);
 router.get('/payments', auth.hasToken, shop.payments);
 router.get('/charge', auth.hasCharge, shop.charge);
-router.get('/dashboard', auth.hasToken, the_app.dashboard);
+router.get('/dashboard(/:page)?', auth.hasToken, the_app.dashboard);
 router.post('/membership', auth.hasToken, the_app.updateProduct);
 
 

@@ -37,6 +37,7 @@ var index = function (req, res, next) {
 exports.index = index;
 
 var dashboard = function (req, res, next) {
+    var page = typeof req.params.page === 'undefined' || !req.params.page || new RegExp("[^0-9]").exec(req.params.page) ? 1 : req.params.page;
     var sess = req.session;
 
     var Shopify = new shopifyAPI({
@@ -45,36 +46,18 @@ var dashboard = function (req, res, next) {
         shopify_shared_secret: config.shopify.shared_secret,
         access_token: sess.token
     });
-    console.log("in dashboard");
     Shopify.get('/admin/products/count.json', null, function (err, data) {
        if(!err){
            var count = data.count;
-           Shopify.get('/admin/products.json?limit=50&page=1', null, function (err, data){
+           Shopify.get('/admin/products.json?limit=50&page=' + page, null, function (err, data) {
                if(!err){
                    var products = {};
-                   products['count'] = count;
-                   data.products.forEach(function (product) {
-                       var title = product.title,
-                           id = product.id;
-                       var price, sku, weight, weight_unit, inventory_quantity;
-
-                       product.variants.forEach(function (variant) {
-                           price = variant.price;
-                           sku = variant.sku;
-                           weight = variant.weight;
-                           weight_unit = variant.weight_unit;
-                           inventory_quantity = variant.inventory_quantity;
-                       });
-                       if (products['product'])
-                           products['product'] = products['product'].concat([{title: title, id: id, price: price,
-                               sku: sku, weight: weight, weight_unit: weight_unit,
-                               inventory_quantity: inventory_quantity}]);
-                       else products['product'] = [{title: title, id: id, price: price,
-                           sku: sku, weight: weight, weight_unit: weight_unit, inventory_quantity: inventory_quantity}];
-                   });
+                   products['maxPage'] = Math.floor(count / 2.0);
+                   products['page'] = page;
+                   products['products'] = data;
 
                    res.render('dashboard',{
-                       products: products
+                       data: products
                    });
                }
                else{
@@ -95,27 +78,32 @@ var updateProduct = function (req, res, next) {
 
     //  get from form
     var product_id = req.body.product_id,
-        inventory = req.body.inventory_quantity,
-        weight = req.body.weight,
-        weight_unit = req.body.weight_unit,
+        variant_id = req.body.variant_id,
+        option1 = req.body.option,
         price = req.body.price,
-        option = req.body.option,
-        sku = req.body.sku;
+        option_id = req.body.option_id;
 
     var variant =
     {
         "variant": {
-            "title": option,
-            "product_id": product_id,
+            "option1": option1,
             "price": price,
-            "inventory_management": "shopify",
-            "option1": "Membership",
-            "inventory_quantity": inventory,
-            "weight": weight,
-            "weight_unit": weight_unit,
-            "requires_shipping": true,
-            "sku": sku
+            "id": variant_id
         }
+    };
+
+    var options =
+    {
+        "product": {
+            "id": product_id,
+            "options": [
+                {
+                    "id": option_id,
+                    "name": "Membership"
+                }
+            ]
+        }
+
     };
 
     var sess = req.session;
@@ -128,11 +116,16 @@ var updateProduct = function (req, res, next) {
         access_token: sess.token
     });
 
-    Shopify.post('/admin/products/' + product_id + '/variants.json', variant, function (err, data){
-        if(!err) res.status(200).json({title: option, price: price});
+    Shopify.put('/admin/products/' + product_id + '.json', options, function (err, data) {
+        if (!err) {
+            Shopify.put('/admin/variants/' + variant_id + '.json', variant, function (err, data) {
+                if (!err) res.status(200).json({title: option1, price: price});
+                else res.status(404).json({error: 'Not Found'});
+            });
+        }
         else res.status(404).json({ error: 'Not Found' });
-
     });
+
 
 };
 

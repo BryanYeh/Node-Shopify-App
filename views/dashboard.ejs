@@ -11,32 +11,44 @@
     <h1>Dashboard</h1>
     <h2>This will create a NEW option called <strong>Membership</strong> with its variants and prices you input</h2>
 
-    <% products.product.forEach(function(product) { %>
-    <div class="col-md-12">
+    <% data.products.products.forEach(function(product){ %>
+    <% console.log(product.options) %>
+    <div class="col-xs-12">
         <div class="well">
-            <h3><%= product.title %> <small>$<%= product.price %></small></h3>
-            <form class="membership" action="/membership" method="post">
-                <input type="hidden" name="product_id" value="<%= product.id %>">
-                <input type="hidden" name="sku" value="<%= product.sku %>">
-                <input type="hidden" name="weight" value="<%= product.weight %>">
-                <input type="hidden" name="weight_unit" value="<%= product.weight_unit %>">
-                <input type="hidden" name="inventory_quanity" value="<%= product.inventory_quantity %>">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="option">Variant:</label>
-                        <input type="text" class="form-control" name="option" id="option">
+            <h3><%= product.title %></h3>
+
+            <% product.variants.forEach(function(variant){ %>
+
+            <div class="row">
+                <form class="membership" action="/membership" method="post">
+                    <input type="hidden" value="<%= product.id %>" name="product_id">
+                    <input type="hidden" value="<%= variant.id %>" name="variant_id">
+                    <input type="hidden" value="<%= product.options[0].id %>" name="option_id">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="option">Membership Name:</label>
+                            <input type="text" class="form-control" name="option" id="option"
+                                   value="<%= variant.option1 %>">
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="price">Price:</label>
-                        <input type="text" class="form-control" name="price" id="price">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="price">Price:</label>
+                            <input type="number" class="form-control" name="price" id="price"
+                                   value="<%= variant.price %>">
+                        </div>
                     </div>
-                </div>
-                <input type="submit" class="btn btn-submit">
-            </form>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-submit">
+                        </div>
+                    </div>
+                </form>
+                    </div>
+            <% }) %>
+
         </div>
-    </div>
+        </div>
     <% }); %>
 
 </div>
